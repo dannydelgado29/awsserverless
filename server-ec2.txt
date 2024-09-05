@@ -1,0 +1,22 @@
+sudo yum update httpd
+sudo yum install httpd
+sudo systemctl start httpd
+sudo systemctl status httpd
+
+-----
+
+sudo systemctl stop httpd
+sudo nano/var /www/html/index.html
+
+<html>
+  <head>
+    <title>Welcome to your website!</title>
+  </head>
+  <body>
+    <h1>Success! The <your name> virtual host is working on AWS EC2!</h1>
+  </body>
+</html>
+
+
+sudo systemctl start httpd
+sudo systemctl disable httpd
