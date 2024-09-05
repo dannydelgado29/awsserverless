@@ -1,0 +1,60 @@
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
+
+const client = new DynamoDBClient({});
+
+const dynamo = DynamoDBDocumentClient.from(client);
+
+const tableName = 'arn:aws:dynamodb:us-east-2:116133827911:table/test';
+
+export const handler = async (event, context) => {
+  const eventBody = event.body || JSON.parse(event.body);
+
+  let responseBody;
+  let statusCode = 200;
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  try {
+    let requestJSON = eventBody;
+
+    await dynamo.send(
+      new PutCommand({
+        TableName: tableName,
+        Item: {
+          id: requestJSON.id,
+          price: requestJSON.price,
+          name: requestJSON.name,
+        },
+      })
+    );
+    responseBody = `Put item ${requestJSON.id}`;
+  } catch (err) {
+    statusCode = 400;
+    responseBody = err.message;
+  } finally {
+    responseBody = JSON.stringify(responseBody);
+  }
+
+  return {
+    statusCode,
+    responseBody,
+    headers,
+  };
+};
+
+
+
+
+/*
+Evento para prueba
+{
+  "body": {
+      "id": 1,
+      "name": "Mouse with IA",
+      "price": 35,
+      "stock": 24
+  }
+}
+*/
